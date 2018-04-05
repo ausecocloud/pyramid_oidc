@@ -1,6 +1,6 @@
 
-pyramid_oidc:
-=============
+pyramid_oidc
+============
 
 
 Provides authenticators to handle OIDC bearer tokens and manage OIDC login
@@ -21,6 +21,7 @@ flow helper views.
 
 
 .. code:: python
+
     config.include('pyramid_oidc', route_prefix='/oidc')
 
 
@@ -29,6 +30,7 @@ Configuration:
 ==============
 
 .. code:: ini
+
     # example which uses multiauth to configure authentication
     multiauth.policies = bearer session
     multiauth.policy.bearer.use = pyramid_oidc.authentication.OIDCBearerAuthenticationPolicy

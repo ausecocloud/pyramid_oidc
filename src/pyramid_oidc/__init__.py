@@ -95,6 +95,7 @@ def includeme(config):
                          request_param='code')
         config.add_route('oidc.login', '/login')
         config.add_route('oidc.logout', '/logout')
+        config.add_route('oidc.token', '/token')
         config.scan()
 
     # setup session factory if requested

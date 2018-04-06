@@ -80,3 +80,18 @@ def logout(request):
         # TODO: some logged_out view would work as well
         request.application_url
     )
+
+
+@view_config(route_name='oidc.token', renderer='json')
+def token(request):
+    session = request.session
+    # there is only one chance to get this right
+    tokens = session.get('oidc.token', None)
+    if not tokens:
+        return {}
+    token = {
+        key: value for (key, value) in tokens.items()
+        if key in ('access_token', 'expires_at', 'expires_in',
+                   'id_token', 'token_type')
+    }
+    return token

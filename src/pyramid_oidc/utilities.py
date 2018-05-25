@@ -26,7 +26,7 @@ class OIDCUtility(object):
         self.userid_claim = userid_claim or 'sub'
 
         # Disbale SSL verify
-        self.verify = os.environ.get('PYTHONHTTPSVERIFY') == '0'
+        self.verify = os.environ.get('PYTHONHTTPSVERIFY', None) != '0'
 
         # load openid-configuration
         self._load_configuration()

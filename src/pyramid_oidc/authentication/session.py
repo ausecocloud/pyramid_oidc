@@ -49,6 +49,7 @@ class OIDCSessionAuthenticationPolicy(CallbackAuthenticationPolicy):
             oidc_tokens = request.session.get('oidc.token')
             if not (oidc_tokens and oidc_tokens.get('refresh_token')):
                 # no refresh token
+                del request.session['oidc.token']
                 return None
             # try refresh
             oauth = oidc.get_oauth2_session(request, token=oidc_tokens)
@@ -70,43 +71,25 @@ class OIDCSessionAuthenticationPolicy(CallbackAuthenticationPolicy):
             claims = oidc.validate_access_token(access_token)
             # store new tokens in session (store full token response)
             oidc_tokens = dict(response)
+            # and the decoded id_token
             oidc_tokens['id_token'] = id_token
             request.session['oidc.token'] = oidc_tokens
-        request.environ['oidc.claims'] = claims
+        if claims:
+            # store claims in familiar place as well
+            request.environ['oidc.claims'] = claims
         return claims
-
-    def get_user(self, request):
-        # TODO: we assume we have an id_token when we started the session
-        claims = self._validate_access_token(request)
-        if not claims:
-            # no claims
-            return {}
-        id_token = request.session.get('oidc.token', {}).get('id_token')
-        if id_token:
-            return {
-                'id': id_token[self._get_utility(request).userid_claim],
-                # TODO: which claim to use?
-                'name': id_token['name'],
-                'email': id_token['email'],
-            }
-
-        return {}
 
     # @IAuthenticationPolicy
     def unauthenticated_userid(self, request):
         """Get identity from request Auth header without validation"""
         # we verify and extract the token here, so that we can
         # inspect the claims in the callback
-        # if verify fails, we just return the sub claim, and don't set
+        # if verify fails, we return None
         # any claims in the request.env
         claims = self._validate_access_token(request)
-        oidc = self._get_utility(request)
-        if not claims:
-            token = self.get_token(request)
-            if token:
-                claims = oidc.get_unverified_claims(token)
         if not claims:
             return None
+        oidc = self._get_utility(request)
         return claims.get(oidc.userid_claim)
 
     # @IAuthenticationPolicy

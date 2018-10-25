@@ -83,7 +83,11 @@ def includeme(config):
         client_secret=parse_setting(settings, 'oidc.', 'client_secret',
                                     envvar='OIDC_CLIENT_SECRET'),
         userid_claim=parse_setting(settings, 'oidc.', 'userid_claim',
-                                   envvar='OIDC_USERID_CLAIM')
+                                   envvar='OIDC_USERID_CLAIM'),
+        audience=parse_setting(settings, 'oidc.', 'audience',
+                               envvar='OIDC_AUDIENCE'),
+        verify_aud=parse_setting(settings, 'oidc.', 'verify_aud',
+                                 conv=asbool, envvar='OIDC_VERIFY_AUD'),
     )
     config.registry.registerUtility(utility, IOIDCUtility)
 

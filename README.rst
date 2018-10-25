@@ -45,6 +45,9 @@ Configuration:
     oidc.issuer =
     oidc.client_id =
     oidc.client_secret =
+    # settings to deal with audience claims
+    #oidc.audience =
+    #oidc.verify_aud = True
     # set to something falsy if oidc views should be disabled
     #oidc.enable_views = True
 

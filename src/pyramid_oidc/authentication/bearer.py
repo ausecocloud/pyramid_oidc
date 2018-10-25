@@ -1,4 +1,4 @@
-from jose.exceptions import ExpiredSignatureError
+from jose.exceptions import ExpiredSignatureError, JWTClaimsError
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.interfaces import IAuthenticationPolicy
 from zope.interface import implementer
@@ -46,8 +46,10 @@ class OIDCBearerAuthenticationPolicy(CallbackAuthenticationPolicy):
         token = self.get_token(request)
         try:
             claims = self._get_utility(request).validate_access_token(token)
-        except ExpiredSignatureError:
-            # access token expired ... can't do anything here
+        except (ExpiredSignatureError, JWTClaimsError):
+            # access token expired or claims don't check out
+            # ... can't do anything here
+            # TODO: log it?
             pass
         if claims:
             request.environ['oidc.claims'] = claims
@@ -55,35 +57,17 @@ class OIDCBearerAuthenticationPolicy(CallbackAuthenticationPolicy):
             request.environ.pop('oidc.claims', None)
         return claims
 
-    def get_user(self, request):
-        # TODO: we assume the access_token is a jwt with all the info we need
-        # TODO: we potentially decode and verify the token a 2nd time here.
-        claims = self._validate_access_token(request)
-        if not claims:
-            # no claims
-            return {}
-        # TODO: we assume all these claims are available
-        return {
-            'id': claims[self._get_utility(request).userid_claim],
-            'name': claims['name'],
-            'email': claims['email']
-        }
-
     # @IAuthenticationPolicy
     def unauthenticated_userid(self, request):
         """Get identity from request Auth header without validation"""
         # we verify and extract the token here, so that we can
         # inspect the claims in the callback
-        # if verify fails, we just return the sub claim, and don't set
+        # if verify fails, we return None
         # any claims in the request.env
         claims = self._validate_access_token(request)
-        oidc = self._get_utility(request)
-        if not claims:
-            token = self.get_token(request)
-            if token:
-                claims = oidc.get_unverified_claims(token)
         if not claims:
             return None
+        oidc = self._get_utility(request)
         return claims.get(oidc.userid_claim)
 
     # @IAuthenticationPolicy

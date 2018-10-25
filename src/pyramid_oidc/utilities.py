@@ -14,7 +14,7 @@ class OIDCUtility(object):
 
     def __init__(self, issuer, client_id, client_secret,
                  userid_claim='sub',
-                 callback=None, debug=False, route_prefix='',
+                 audience=None, verify_aud=None,
                  **kwargs):
         self.issuer = issuer
         self.client_id = client_id
@@ -22,6 +22,12 @@ class OIDCUtility(object):
         self.scope = 'openid'
         if 'scope' in kwargs:
             self.scope = kwargs['scope']
+        if not audience:
+            self.audience = client_id
+        # our settings parser my put None in in case the value has not been configured.
+        if verify_aud is None:
+            verify_aud = True
+        self.verify_aud = verify_aud
 
         self.userid_claim = userid_claim or 'sub'
 
@@ -101,8 +107,8 @@ class OIDCUtility(object):
         return jwt.decode(
             token=id_token,
             key=self.jwk,
-            audience=self.client_id,
-            issuer=self.issuer
+            audience=self.audience,
+            issuer=self.issuer,
         )
 
     def validate_access_token(self, token):
@@ -113,8 +119,11 @@ class OIDCUtility(object):
         return jwt.decode(
             token=token,
             key=self.jwk,
-            audience=self.client_id,
-            issuer=self.issuer
+            audience=self.audience,
+            issuer=self.issuer,
+            options={
+                'verify_aud': self.verify_aud,
+            },
         )
 
     def get_unverified_claims(self, token):

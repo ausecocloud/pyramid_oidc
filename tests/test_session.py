@@ -19,7 +19,7 @@ class TestSessionAuthenticationPolicy(unittest.TestCase):
             # 'oidc.userid_claim': 'sub',
             # 'oidc.audience': 'example_audience',
             # 'oidc.verify_aud': 'True',
-            'oidc.enable_views': 'True',
+            # 'oidc.enable_views': 'True',
             'session.factory': 'pyramid_oidc.session.SessionFactory',
         })
         with requests_mock.mock() as m:

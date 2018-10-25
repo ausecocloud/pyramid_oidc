@@ -22,6 +22,8 @@ setup(
     keywords='python pyramid openidconnect oidc',
     author='',
     author_email='',
+    maintainer='',
+    maintainer_email='',
     url='https://github.com/ausecocloud/pyramid_oidc',
     license='Apache License 2.0',
     packages=find_packages('src'),
@@ -40,6 +42,9 @@ setup(
     ],
     extras_require={
         'test': [
+            'pytest',
+            'pytest-cov',
+            'requests_mock'
         ],
     }
 )

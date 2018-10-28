@@ -22,8 +22,9 @@ class OIDCUtility(object):
         self.scope = 'openid'
         if 'scope' in kwargs:
             self.scope = kwargs['scope']
-        if not audience:
-            self.audience = client_id
+        self.audience = client_id
+        if audience:
+            self.audience = audience
         # our settings parser my put None in in case the value has not been configured.
         if verify_aud is None:
             verify_aud = True

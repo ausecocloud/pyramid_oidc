@@ -51,14 +51,16 @@ class OIDCUtility(object):
         # TODO: refresh jwks every now and then
         self.jwk = requests.get(self.jwks_uri, verify=self.verify).json()
 
+    # TODO: make redirect_uri configurable and default to current value
+    #       may need url arguments passed
     def get_oauth2_session(self, request, state=None, scope=None, token=None):
         session = OAuth2Session(
             client_id=self.client_id,
             auto_refresh_url=self.token_endpoint,
             # auto_refresh_kwargs,
             scope=scope or self.scope,
-            redirect_uri=request.route_url('oidc.redirect_uri'),
-            # state=,
+            redirect_uri=request.route_url('pyramid_oidc.redirect_uri'),
+            state=state,
             token=token,
             # **kwargs:
             #   code=None,
@@ -85,7 +87,6 @@ class OIDCUtility(object):
         oauth = self.get_oauth2_session(request, scope=scope)
         return oauth.authorization_url(
             url=self.authorization_endpoint,
-            # state=None,
             # **kwargs
         )
 

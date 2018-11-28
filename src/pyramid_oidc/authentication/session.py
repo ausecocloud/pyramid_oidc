@@ -41,7 +41,7 @@ class OIDCSessionAuthenticationPolicy(CallbackAuthenticationPolicy):
         try:
             token = self.get_token(request)
             if token:
-                claims = oidc.validate_access_token(token)
+                claims = oidc.validate_token(token)
         except ExpiredSignatureError:
             # token is expired ... if we have a refresh token, we can try to
             # update the token
@@ -66,9 +66,9 @@ class OIDCSessionAuthenticationPolicy(CallbackAuthenticationPolicy):
                 self.log.info('Access Token refresh failed')
                 return None
             # validate id_token
-            id_token = oidc.validate_id_token(response['id_token'])
+            id_token = oidc.validate_token(response['id_token'])
             access_token = response['access_token']
-            claims = oidc.validate_access_token(access_token)
+            claims = oidc.validate_token(access_token)
             # store new tokens in session (store full token response)
             oidc_tokens = dict(response)
             # and the decoded id_token

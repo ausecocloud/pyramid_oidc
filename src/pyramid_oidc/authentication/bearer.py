@@ -45,7 +45,7 @@ class OIDCBearerAuthenticationPolicy(CallbackAuthenticationPolicy):
             return claims
         token = self.get_token(request)
         try:
-            claims = self._get_utility(request).validate_access_token(token)
+            claims = self._get_utility(request).validate_token(token)
         except (ExpiredSignatureError, JWTClaimsError):
             # access token expired or claims don't check out
             # ... can't do anything here

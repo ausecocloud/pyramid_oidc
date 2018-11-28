@@ -1,4 +1,5 @@
 import os
+import warnings
 
 # TODO: oauthlib uses pyjwt?
 from jose import jwt
@@ -101,21 +102,17 @@ class OIDCUtility(object):
         )
         return token
 
-    def validate_id_token(self, id_token):
-        """Decode and validate given id token."""
+    def validate_token(self, token, verify_exp=True):
+        """Decode and validate given id token.
+
+           Assumes token is a JWT.
+
+           TODO: use token introspection endpoint for non JWT tokens.
+                 in case of id_tokens it may be more appropriate to call user info endpoint?
+        """
         # typical validation:
         # - check signature
         # - check issuer, audience, timestamps (iat, exp), nonce
-        return jwt.decode(
-            token=id_token,
-            key=self.jwk,
-            audience=self.audience,
-            issuer=self.issuer,
-        )
-
-    def validate_access_token(self, token):
-        # verify access token and return claims
-        # TODO: assumes access token is a jwt with useful attributes
         if not token:
             return None
         return jwt.decode(
@@ -125,8 +122,19 @@ class OIDCUtility(object):
             issuer=self.issuer,
             options={
                 'verify_aud': self.verify_aud,
-            },
+                'verify_exp': verify_exp,
+            }
         )
+
+    # TODO: maybe support calling token introspection endpoint / userinfo ep
+    #       in case tokens are not JWT
+    def validate_id_token(self, id_token):
+        warnings.warn('use OIDCUtility.validate_token', category=DeprecationWarning, stacklevel=2)
+        return self.validate_token(id_token)
+
+    def validate_access_token(self, token):
+        warnings.warn('use OIDCUtility.validate_token', category=DeprecationWarning, stacklevel=2)
+        return self.validate_token(token)
 
     def get_unverified_claims(self, token):
         return jwt.get_unverified_claims(token)

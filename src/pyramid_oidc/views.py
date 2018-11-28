@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from .interfaces import IOIDCUtility
 
 
-@view_config(route_name='oidc.login')
+@view_config(route_name='pyramid_oidc.login')
 def login(request):
     # Trigger login flow. We start a new session, and redirect to
     # authentication endpoint.
@@ -32,7 +32,7 @@ def login(request):
     return HTTPFound(auth_url)
 
 
-@view_config(route_name='oidc.redirect_uri')
+@view_config(route_name='pyramid_oidc.redirect_uri')
 def redirect_uri(request):
     # TODO: we just assume things here and let it fail terribly if our
     #       assumption is wrong. e.g.: code param, session state is there
@@ -68,7 +68,7 @@ def redirect_uri(request):
     )
 
 
-@view_config(route_name='oidc.logout')
+@view_config(route_name='pyramid_oidc.logout')
 def logout(request):
     # TODO: we probabl want to call / redirect to the oidc lougout endpoint
     #       if possible

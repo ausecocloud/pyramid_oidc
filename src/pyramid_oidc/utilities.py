@@ -16,6 +16,8 @@ class OIDCUtility(object):
     def __init__(self, issuer, client_id, client_secret,
                  userid_claim='sub',
                  audience=None, verify_aud=None,
+                 redirect_route='pyramid_oidc.redirect_uri',
+                 redirect_route_params=None,
                  **kwargs):
         self.issuer = issuer
         self.client_id = client_id
@@ -30,6 +32,10 @@ class OIDCUtility(object):
         if verify_aud is None:
             verify_aud = True
         self.verify_aud = verify_aud
+        self.redirect_route = redirect_route
+        if redirect_route_params is None:
+            redirect_route_params = {}
+        self.redirect_route_params = redirect_route_params
 
         self.userid_claim = userid_claim or 'sub'
 
@@ -52,15 +58,13 @@ class OIDCUtility(object):
         # TODO: refresh jwks every now and then
         self.jwk = requests.get(self.jwks_uri, verify=self.verify).json()
 
-    # TODO: make redirect_uri configurable and default to current value
-    #       may need url arguments passed
     def get_oauth2_session(self, request, state=None, scope=None, token=None):
         session = OAuth2Session(
             client_id=self.client_id,
             auto_refresh_url=self.token_endpoint,
             # auto_refresh_kwargs,
             scope=scope or self.scope,
-            redirect_uri=request.route_url('pyramid_oidc.redirect_uri'),
+            redirect_uri=request.route_url(self.redirect_route, **self.redirect_route_params),
             state=state,
             token=token,
             # **kwargs:
@@ -126,8 +130,6 @@ class OIDCUtility(object):
             }
         )
 
-    # TODO: maybe support calling token introspection endpoint / userinfo ep
-    #       in case tokens are not JWT
     def validate_id_token(self, id_token):
         warnings.warn('use OIDCUtility.validate_token', category=DeprecationWarning, stacklevel=2)
         return self.validate_token(id_token)

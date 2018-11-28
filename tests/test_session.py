@@ -135,54 +135,6 @@ class TestSessionAuthenticationPolicy(unittest.TestCase):
         self.assertNotIn('oidc.token', request.session)
         self.assertNotIn('oidc.claims', request.environ)
 
-    # def test_fail_aud(self):
-    #     token = self._gen_token(aud='other_client_id')
-    #     request = DummyRequest(session={'oidc.token': {'access_token': token}})
-    #     policy = self._makeOne()
-    #     self.assertEqual(policy.get_token(request), token)
-    #     self.assertEqual(policy.unauthenticated_userid(request), None)
-    #     self.assertEqual(policy.authenticated_userid(request), None)
-    #     self.assertNotIn('oidc.claims', request.environ)
-
-    # def test_ignore_aud(self):
-    #     request = DummyRequest()
-    #     token = self._gen_token(aud='other_client_id')
-    #     request.headers['Authorization'] = 'Bearer {}'.format(token)
-    #     policy = self._makeOne()
-    #     policy._get_utility(request).verify_aud = False
-    #     self.assertEqual(policy.get_token(request), token)
-    #     self.assertEqual(policy.unauthenticated_userid(request),
-    #                      'example_user_id')
-    #     self.assertEqual(policy.authenticated_userid(request),
-    #                      'example_user_id')
-    #     self.assertEqual(request.environ['oidc.claims']['sub'],
-    #                      'example_user_id')
-
-    # def test_other_aud(self):
-    #     request = DummyRequest()
-    #     token = self._gen_token(aud='other_client_id')
-    #     request.headers['Authorization'] = 'Bearer {}'.format(token)
-    #     policy = self._makeOne()
-    #     policy._get_utility(request).audience = 'other_client_id'
-    #     self.assertEqual(policy.get_token(request), token)
-    #     self.assertEqual(policy.unauthenticated_userid(request),
-    #                      'example_user_id')
-    #     self.assertEqual(policy.authenticated_userid(request),
-    #                      'example_user_id')
-    #     self.assertEqual(request.environ['oidc.claims']['sub'],
-    #                      'example_user_id')
-
-    # def test_fail_other_aud(self):
-    #     request = DummyRequest()
-    #     token = self._gen_token()
-    #     request.headers['Authorization'] = 'Bearer {}'.format(token)
-    #     policy = self._makeOne()
-    #     policy._get_utility(request).audience = 'other_client_id'
-    #     self.assertEqual(policy.get_token(request), token)
-    #     self.assertEqual(policy.unauthenticated_userid(request), None)
-    #     self.assertEqual(policy.authenticated_userid(request), None)
-    #     self.assertNotIn('oidc.claims', request.environ)
-
     def test_remember(self):
         request = DummyRequest()
         policy = self._makeOne()

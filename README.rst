@@ -94,3 +94,14 @@ Configuration:
     # session.dogpile_opts.arguments.port = 6379
     # session.dogpile_opts.arguments.redis_expiration_time = 2400
     # session.dogpile_opts.debug = True
+
+
+Development:
+============
+
+.. code:: bash
+
+    make dev
+    pip install -e ".[test]"
+    pytest
+

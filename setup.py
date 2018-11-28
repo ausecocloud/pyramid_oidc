@@ -35,9 +35,9 @@ setup(
         'setuptools',
         'pyramid',
         'python-jose',
-        'oauthlib',            #[rsa,signedtoken,signals]
-        'requests[security]',  #[security,socks]
-        'requests-oauthlib',   #[rsa]
+        'oauthlib',            # [rsa,signedtoken,signals]
+        'requests[security]',  # [security,socks]
+        'requests-oauthlib',   # [rsa]
         'dogpile.cache'
     ],
     extras_require={

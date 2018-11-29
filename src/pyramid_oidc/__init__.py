@@ -73,12 +73,12 @@ def get_session_opts(settings):
 
 def build_oidc_utility(settings, prefix):
     return OIDCUtility(
-        issuer=parse_setting(settings, 'oidc.', 'issuer'),
-        client_id=parse_setting(settings, 'oidc.', 'client_id'),
-        client_secret=parse_setting(settings, 'oidc.', 'client_secret'),
-        userid_claim=parse_setting(settings, 'oidc.', 'userid_claim'),
-        audience=parse_setting(settings, 'oidc.', 'audience'),
-        verify_aud=parse_setting(settings, 'oidc.', 'verify_aud', conv=asbool),
+        issuer=parse_setting(settings, prefix, 'issuer'),
+        client_id=parse_setting(settings, prefix, 'client_id'),
+        client_secret=parse_setting(settings, prefix, 'client_secret'),
+        userid_claim=parse_setting(settings, prefix, 'userid_claim'),
+        audience=parse_setting(settings, prefix, 'audience'),
+        verify_aud=parse_setting(settings, prefix, 'verify_aud', conv=asbool),
     )
 
 

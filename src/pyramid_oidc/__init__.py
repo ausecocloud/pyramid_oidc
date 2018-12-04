@@ -6,7 +6,7 @@ from .interfaces import IOIDCUtility
 from .utilities import OIDCUtility
 
 
-def parse_setting(settings, prefix, key, conv=None, envvar=True):
+def parse_setting(settings, prefix, key, conv=None, envvar=True, default=None):
     val = None
     name = ''.join([prefix, key])
     if envvar:
@@ -16,6 +16,8 @@ def parse_setting(settings, prefix, key, conv=None, envvar=True):
         val = settings.get(name, None)
     if val is not None and conv is not None:
         val = conv(val)
+    if val is None:
+        val = default
     return val
 
 
@@ -79,6 +81,7 @@ def build_oidc_utility(settings, prefix):
         userid_claim=parse_setting(settings, prefix, 'userid_claim'),
         audience=parse_setting(settings, prefix, 'audience'),
         verify_aud=parse_setting(settings, prefix, 'verify_aud', conv=asbool),
+        scope=parse_setting(settings, prefix, 'scope', default='openid')
     )
 
 

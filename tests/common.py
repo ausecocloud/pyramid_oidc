@@ -1,6 +1,4 @@
 # define some constants to be used in unittests
-import json
-
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
